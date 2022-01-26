@@ -1,0 +1,11 @@
+repositories:
+  - name: kedacore
+    url: https://kedacore.github.io/charts
+
+helmDefaults:
+  createNamespace: true
+
+releases:
+  - name: keda
+    chart: kedacore/keda
+    namespace: keda

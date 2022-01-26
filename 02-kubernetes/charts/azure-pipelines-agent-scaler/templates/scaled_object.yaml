@@ -1,0 +1,16 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: azure-pipelines-scaler
+spec:
+  scaleTargetRef:
+    kind: "{{ .Values.target.kind }}"
+    name: "{{ .Values.target.name }}"
+  minReplicaCount: {{ .Values.minReplicaCount }}
+  maxReplicaCount: {{ .Values.maxReplicaCount }}
+  triggers:
+    - type: azure-pipelines
+      metadata:
+        poolID: "{{ .Values.poolId }}"
+        organizationURLFromEnv: "AZP_URL"
+        personalAccessTokenFromEnv: "AZP_TOKEN"

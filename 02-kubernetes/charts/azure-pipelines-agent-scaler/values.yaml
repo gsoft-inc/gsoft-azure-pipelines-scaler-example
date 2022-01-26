@@ -1,0 +1,6 @@
+target:
+  name: agent
+  kind: deployment
+minReplicaCount: 1
+maxReplicaCount: 5
+poolId: 1

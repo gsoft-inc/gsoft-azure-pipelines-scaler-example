@@ -1,0 +1,35 @@
+helmDefaults:
+  createNamespace: true
+
+releases:
+  - name: agent
+    chart: charts/azure-pipelines-agent
+    namespace: azure-pipelines-agents
+    values:
+      - image:
+          repository: {{ requiredEnv "YOUR_REGISTRY_URL" }}/pipeline_agent
+          tag: latest
+          pullPolicy: Always
+      - pat:
+          name: pat
+          value: {{ requiredEnv "YOUR_AZP_PAT" | quote }}
+      - environmentVars:
+        - name: AZP_URL
+          value: {{ requiredEnv "YOUR_AZP_URL" | quote }}
+        - name: AZP_POOL
+          value: {{ env "YOUR_AZP_POOL" | default "default" }}
+        - name: AZP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: pat
+              key: token
+
+
+  - name: agent-scaler
+    chart: charts/azure-pipelines-agent-scaler
+    namespace: azure-pipelines-agents
+    needs:
+      - agent
+    values:
+      - minReplicaCount: 2
+      - poolId: {{ requiredEnv "YOUR_AZP_POOL_ID" }}
