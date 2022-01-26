@@ -31,5 +31,4 @@ releases:
     needs:
       - agent
     values:
-      - minReplicaCount: 2
       - poolId: {{ requiredEnv "YOUR_AZP_POOL_ID" }}
