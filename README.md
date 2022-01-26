@@ -13,9 +13,19 @@
 - Terraform
 - Azure Subscription
 
-To speed things up, here's the basic infrastructure you need in Azure to get started:
-1. Azure Kubernetes Service
-2. Azure Container Registry
+If you don't already have your infrastructure setup, you can use this Terraform project to create:
+1. Azure Kubernetes Service (AKS)
+2. Azure Container Registry (ACR)
+3. Access policy to pull images from ACR in AKS
+
+To create the infrastructure, open a terminal in the `./00-infrastructure` directory and execute the following:
+
+```bash
+terraform init
+terraform apply
+```
+
+Once completed, the Terraform will output the required values you will need later on:
 
 ![Terraform Output](docs/terraform_output.png)
 
@@ -24,11 +34,11 @@ To speed things up, here's the basic infrastructure you need in Azure to get sta
 ### Prerequisites
 - Container registry
 
-Build and push your Pipeline Agent Image with the following commands:
-
 First login to your registry.  For Azure Container Registries, use the following:
 
 `az acr login --name <YOUR_REGISTRY_NAME>`
+
+The build and push your Pipeline Agent Image with the following commands:
 
 `docker build -t <YOUR_REGISTRY_URL>/pipeline_agent`
 
@@ -41,11 +51,11 @@ First, authenticate to your k8s cluster and set the context.  If you're using AK
 `az aks get-credentials -g <YOUR_AKS_RESOURCE_GROUP_NAME> -n <YOUR_AKS_NAME>`
 
 ```bash
-helmfile \
---state-values-set \
-registry.url=<YOUR_REGISTRY_URL>,\
-azp.url=<YOUR_AZP_URL>,\
-azp.pool=<YOUR_AZP_POOL>,\
-pat=<YOUR_AZP_PAT> \
-apply
+export YOUR_REGISTRY_URL=<YOUR_REGISTRY_URL>
+export YOUR_AZP_URL=<YOUR_AZP_URL>
+export YOUR_AZP_POOL=<YOUR_AZP_POOL>
+export YOUR_AZP_PAT=<YOUR_AZP_PAT>
+
+helmfile -f ./keda.yaml apply
+helmfile -f ./agent.yaml apply
 ```
