@@ -1,6 +1,7 @@
 target:
   name: agent
   kind: deployment
+# Minimum replica count should always be at least 1 since the agent pool cannot be empty
 minReplicaCount: 1
 maxReplicaCount: 5
 poolId: 1
